@@ -1,0 +1,36 @@
+name: Regression
+
+on: [push]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        rust: [stable]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Setup Rust
+        uses: hecrj/setup-rust-action@v1
+        with:
+          rust-version: ${{ matrix.rust }}
+
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Cache target directory
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache toolchains directory
+        uses: actions/cache@v1
+        with:
+          path: ~/.rustup/toolchains
+          key: ${{ runner.os }}-cargo-toolchains-${{ hashFiles('**/rust-toolchain') }}
+
+      - name: Run tests
+        run: make test

@@ -1,0 +1,17 @@
+[package]
+name = "cx"
+version = "0.1.0"
+authors = ["tmtmtoo <tmtmt2209@gmail.com>"]
+edition = "2018"
+license = "MIT"
+description = "A simple command executor utility."
+repository = "https://github.com/tmtmtoo/cx"
+homepage = "https://github.com/tmtmtoo/cx"
+readme = "README.md"
+categories = ["command-line-interface", "command-line-utilities"]
+keywords = ["process", "supervisor", "retry", "parallel"]
+
+[badges]
+github = { repository = "tmtmtoo/cx", workflow = "Rust" }
+
+[dependencies]
