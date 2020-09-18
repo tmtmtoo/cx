@@ -1,6 +1,5 @@
 // https://doc.rust-lang.org/stable/rustc/lints/listing/warn-by-default.html
 #![deny(const_err)]
-#![deny(non_camel_case_types)]
 #![deny(non_shorthand_field_patterns)]
 #![deny(non_snake_case)]
 #![deny(non_upper_case_globals)]
@@ -17,13 +16,44 @@
 #![deny(unused_variables)]
 #![deny(while_true)]
 #![deny(unused_imports)]
+#![allow(non_camel_case_types)]
 
 #[macro_use]
 extern crate derive_new;
 #[macro_use]
 extern crate derive_getters;
 
+mod app;
+mod config;
 mod exec;
 mod prelude;
 
-fn main() {}
+use app::*;
+use config::*;
+use prelude::*;
+use structopt::StructOpt;
+
+#[tokio::main]
+async fn main() {
+    let config = Config::from_args();
+
+    let state_machine = match config {
+        Config::retry {
+            command,
+            max,
+            interval,
+        } => Either::Left(
+            run(RetryApp::new(command.join(" "), max, interval)).map(|output| match output {
+                RetryResult::Success => 0,
+                RetryResult::Failure => 1,
+            }),
+        ),
+        Config::supervise {
+            command,
+            limit,
+            interval,
+        } => Either::Right(run(SuperviseApp::new(command.join(" "), limit, interval)).map(|_| 0)),
+    };
+
+    std::process::exit(state_machine.await);
+}
