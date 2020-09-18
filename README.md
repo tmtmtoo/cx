@@ -30,8 +30,8 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
+    -c, --count <count>          maximum number of retry counts
     -i, --interval <interval>    execution interval (sec) [default: 0.1]
-    -m, --max <max>              maximum number of retries
 
 ARGS:
     <COMMAND>...    command and options
@@ -39,7 +39,7 @@ ARGS:
 
 ### example
 ```bash
-$ cx retry -m 3 -i 2 -- your command that may fail && echo succeeded || echo failed
+$ cx retry -c 3 -i 2 -- your command that may fail && echo succeeded || echo failed
 ```
 
 ## Supervise
@@ -54,8 +54,8 @@ FLAGS:
     -V, --version    Prints version information
 
 OPTIONS:
+    -c, --count <count>          re-execution limit counts
     -i, --interval <interval>    execution interval (sec) [default: 0.1]
-    -l, --limit <limit>          re-execution limit
 
 ARGS:
     <COMMAND>...    command and options
@@ -63,5 +63,5 @@ ARGS:
 
 ### example
 ```bash
-$ cx supervise -l 3 -i 2 -- echo abc
+$ cx supervise -c 3 -i 2 -- echo abc
 ```
