@@ -1,5 +1,4 @@
-# _cx_
-
+# _cx_  ![Test](https://github.com/tmtmtoo/cx/workflows/Test/badge.svg)
 A simple command executor utility.
 
 ```
