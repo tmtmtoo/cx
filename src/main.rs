@@ -40,19 +40,19 @@ async fn main() {
     let state_machine = match config {
         Config::retry {
             command,
-            max,
+            count,
             interval,
         } => Either::Left(
-            run(RetryApp::new(command.join(" "), max, interval)).map(|output| match output {
+            run(RetryApp::new(command.join(" "), count, interval)).map(|output| match output {
                 RetryResult::Success => 0,
                 RetryResult::Failure => 1,
             }),
         ),
         Config::supervise {
             command,
-            limit,
+            count,
             interval,
-        } => Either::Right(run(SuperviseApp::new(command.join(" "), limit, interval)).map(|_| 0)),
+        } => Either::Right(run(SuperviseApp::new(command.join(" "), count, interval)).map(|_| 0)),
     };
 
     std::process::exit(state_machine.await);

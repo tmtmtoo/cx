@@ -98,7 +98,7 @@ impl From<SharedParams<WaitSec>> for SharedParams<PrintableCmdNotFound<CmdExecut
 }
 
 impl RetryApp<SharedParams<PrintableCmdNotFound<CmdExecutor>>, SharedParams<WaitSec>> {
-    pub fn new(command: String, max: Option<usize>, interval: f64) -> Self {
+    pub fn new(command: String, count: Option<usize>, interval: f64) -> Self {
         let executor = Arc::new(TokioPipedCmdExecutor::new());
 
         Self {
@@ -108,7 +108,7 @@ impl RetryApp<SharedParams<PrintableCmdNotFound<CmdExecutor>>, SharedParams<Wait
                 executor.clone(),
                 PrintableCmdNotFound::new(command.to_owned(), CmdExecutor::new(command, executor)),
             )),
-            count: max,
+            count,
         }
     }
 }

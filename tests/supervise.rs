@@ -7,7 +7,7 @@ fn echo_2_times() {
     let mut cmd = Command::cargo_bin("cx").unwrap();
 
     cmd.arg("supervise")
-        .arg("-l")
+        .arg("-c")
         .arg("2")
         .arg("--")
         .arg("echo abc")
@@ -22,7 +22,7 @@ fn echo_2_times() {
     let mut cmd = Command::cargo_bin("cx").unwrap();
 
     cmd.arg("supervise")
-        .arg("-l")
+        .arg("-c")
         .arg("2")
         .arg("--")
         .arg("echo abc")
@@ -38,7 +38,7 @@ fn sleep_one_time() {
     let now = std::time::Instant::now();
 
     cmd.arg("supervise")
-        .arg("-l")
+        .arg("-c")
         .arg("2")
         .arg("-i")
         .arg("0.5")

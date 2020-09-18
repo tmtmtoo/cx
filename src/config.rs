@@ -9,9 +9,9 @@ pub enum Config {
     /// Retry command execution until successful.
     #[structopt(author = "")]
     retry {
-        /// maximum number of retries
+        /// maximum number of retry counts
         #[structopt(short, long)]
-        max: Option<usize>,
+        count: Option<usize>,
 
         /// execution interval (sec)
         #[structopt(short, long, default_value = "0.1")]
@@ -24,9 +24,9 @@ pub enum Config {
     /// Supervise command execution.
     #[structopt(author = "")]
     supervise {
-        /// re-execution limit
+        /// re-execution limit counts
         #[structopt(short, long)]
-        limit: Option<usize>,
+        count: Option<usize>,
 
         /// execution interval (sec)
         #[structopt(short, long, default_value = "0.1")]

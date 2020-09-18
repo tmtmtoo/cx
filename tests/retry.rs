@@ -7,7 +7,7 @@ fn successful_1_time() {
     let mut cmd = Command::cargo_bin("cx").unwrap();
 
     cmd.arg("retry")
-        .arg("-m")
+        .arg("-c")
         .arg("2")
         .arg("--")
         .arg("echo abc")
@@ -25,7 +25,7 @@ fn successful_1_time() {
     let mut cmd = Command::cargo_bin("cx").unwrap();
 
     cmd.arg("retry")
-        .arg("-m")
+        .arg("-c")
         .arg("2")
         .arg("--")
         .arg("echo abc")
@@ -39,7 +39,7 @@ fn failed_2_time() {
     let mut cmd = Command::cargo_bin("cx").unwrap();
 
     cmd.arg("retry")
-        .arg("-m")
+        .arg("-c")
         .arg("2")
         .arg("--")
         .arg("dummy")
@@ -59,7 +59,7 @@ fn sleep_one_time() {
     let now = std::time::Instant::now();
 
     cmd.arg("retry")
-        .arg("-m")
+        .arg("-c")
         .arg("2")
         .arg("-i")
         .arg("0.5")

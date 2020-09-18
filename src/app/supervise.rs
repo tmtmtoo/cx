@@ -95,7 +95,7 @@ impl From<SharedParams<WaitSec>> for SharedParams<PrintableCmdNotFound<CmdExecut
 }
 
 impl SuperviseApp<SharedParams<PrintableCmdNotFound<CmdExecutor>>, SharedParams<WaitSec>> {
-    pub fn new(command: String, limit: Option<usize>, interval: f64) -> Self {
+    pub fn new(command: String, count: Option<usize>, interval: f64) -> Self {
         let executor = Arc::new(TokioPipedCmdExecutor::new());
 
         Self {
@@ -105,7 +105,7 @@ impl SuperviseApp<SharedParams<PrintableCmdNotFound<CmdExecutor>>, SharedParams<
                 executor.clone(),
                 PrintableCmdNotFound::new(command.to_owned(), CmdExecutor::new(command, executor)),
             )),
-            count: limit,
+            count,
         }
     }
 }
