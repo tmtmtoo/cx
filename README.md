@@ -64,3 +64,7 @@ ARGS:
 ```bash
 $ cx supervise -c 3 -i 2 -- echo abc
 ```
+
+## TODO
+- [ ] feature: parallel
+- [ ] build: armv7-unknown-linux-gnueabihf
