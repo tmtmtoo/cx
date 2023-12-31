@@ -31,7 +31,7 @@ fn successful_1_time() {
         .arg("echo abc")
         .assert()
         .success()
-        .stdout(predicate::eq("abc\r\n"));
+        .stdout(predicate::eq("abc\n"));
 }
 
 #[test]
