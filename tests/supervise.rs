@@ -1,7 +1,6 @@
 use assert_cmd::Command;
 use predicates::prelude::*;
 
-#[cfg(not(target_os = "windows"))]
 #[test]
 fn echo_2_times() {
     let mut cmd = Command::cargo_bin("cx").unwrap();
@@ -14,21 +13,6 @@ fn echo_2_times() {
         .assert()
         .success()
         .stdout(predicate::eq("abc\nabc\n"));
-}
-
-#[cfg(target_os = "windows")]
-#[test]
-fn echo_2_times() {
-    let mut cmd = Command::cargo_bin("cx").unwrap();
-
-    cmd.arg("supervise")
-        .arg("-c")
-        .arg("2")
-        .arg("--")
-        .arg("echo abc")
-        .assert()
-        .success()
-        .stdout(predicate::eq("abc\r\nabc\r\n"));
 }
 
 #[test]

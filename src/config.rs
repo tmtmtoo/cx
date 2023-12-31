@@ -1,13 +1,8 @@
-use structopt::clap::AppSettings;
-use structopt::StructOpt;
-
-#[derive(Debug, StructOpt, PartialEq)]
-#[structopt(author = "")]
-#[structopt(raw(setting = "AppSettings::AllowLeadingHyphen"))]
+#[derive(Debug, structopt::StructOpt, PartialEq)]
+#[structopt(setting = structopt::clap::AppSettings::AllowLeadingHyphen)]
 /// Command eXecutor
 pub enum Config {
     /// Retry command execution until successful.
-    #[structopt(author = "")]
     retry {
         /// maximum number of retry counts
         #[structopt(short, long)]
@@ -22,7 +17,6 @@ pub enum Config {
         command: Vec<String>,
     },
     /// Supervise command execution.
-    #[structopt(author = "")]
     supervise {
         /// re-execution limit counts
         #[structopt(short, long)]
