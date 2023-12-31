@@ -1,4 +1,6 @@
-# _cx_  ![Test](https://github.com/tmtmtoo/cx/workflows/Test/badge.svg) ![Release](https://github.com/tmtmtoo/cx/workflows/Release/badge.svg)
+# _cx_  
+![Test](https://github.com/tmtmtoo/cx/workflows/Test/badge.svg) ![Release](https://github.com/tmtmtoo/cx/workflows/Release/badge.svg)
+
 A simple command executor utility.
 
 ```
@@ -65,6 +67,3 @@ ARGS:
 $ cx supervise -c 3 -i 2 -- echo abc
 ```
 
-## TODO
-- [ ] feature: parallel
-- [ ] build: armv7-unknown-linux-gnueabihf
