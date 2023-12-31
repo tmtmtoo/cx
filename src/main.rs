@@ -1,5 +1,4 @@
 // https://doc.rust-lang.org/stable/rustc/lints/listing/warn-by-default.html
-#![deny(const_err)]
 #![deny(non_shorthand_field_patterns)]
 #![deny(non_snake_case)]
 #![deny(non_upper_case_globals)]
