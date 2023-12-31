@@ -30,7 +30,7 @@ where
             State::ExecuteCommand(component) => match self.count {
                 Some(0) => Transition::Done(RetryResult::Failure),
                 _ => match (component.handle().await, self.count) {
-                    (Ok(exit), _) if *exit.code() == 0 => Transition::Done(RetryResult::Success),
+                    (anyhow::Result::Ok(exit), _) if *exit.code() == 0 => Transition::Done(RetryResult::Success),
                     (_, Some(1)) => Transition::Done(RetryResult::Failure),
                     (_, _) => Transition::Next(RetryApp {
                         state: State::Sleep(component.into()),
