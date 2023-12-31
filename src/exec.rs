@@ -18,9 +18,9 @@ pub struct Exit {
     stderr_wrote_length: Option<u64>,
 }
 
-trait AsyncReadUnpin: AsyncRead + Unpin + Send {}
+trait AsyncReadUnpin: tokio::io::AsyncRead + Unpin + Send {}
 
-trait AsyncWriteUnpin: AsyncWrite + Unpin + Send {}
+trait AsyncWriteUnpin: tokio::io::AsyncWrite + Unpin + Send {}
 
 trait ChildProcess: std::future::Future<Output = Result<i32>> + Unpin + Send {
     fn stdout(&mut self) -> Result<Box<dyn AsyncReadUnpin>>;

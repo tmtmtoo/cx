@@ -15,13 +15,13 @@ keywords = ["process", "supervisor", "retry", "parallel"]
 github = { repository = "tmtmtoo/cx", workflow = "Rust" }
 
 [dependencies]
-derive-new = "0.5.8"
-derive-getters = "0.1.0"
-anyhow = "1.0.32"
-tokio = { version = "0.2.22", features = ["rt-threaded", "macros", "time", "process", "io-util", "io-std"] }
-async-trait = "0.1.37"
-futures = "0.3.5"
-structopt = "0.2"
+derive-new = "0.6.0"
+derive-getters = "0.3.0"
+anyhow = "1.0.78"
+tokio = { version = "1.35.1", features = ["rt-multi-thread", "macros", "time", "process", "io-util", "io-std"] }
+async-trait = "0.1.76"
+futures = "0.3.30"
+structopt = "0.3.26"
 
 [dev-dependencies]
 assert_cmd = "1.0.1"
