@@ -21,7 +21,7 @@ anyhow = "1.0.78"
 tokio = { version = "1.35.1", features = ["rt-multi-thread", "macros", "time", "process", "io-util", "io-std"] }
 async-trait = "0.1.76"
 futures = "0.3.30"
-structopt = "0.2"
+structopt = "0.3.26"
 
 [dev-dependencies]
 assert_cmd = "1.0.1"
