@@ -15,7 +15,7 @@ keywords = ["process", "supervisor", "retry", "parallel"]
 github = { repository = "tmtmtoo/cx", workflow = "Rust" }
 
 [dependencies]
-derive-new = "0.5.8"
+derive-new = "0.6.0"
 derive-getters = "0.1.0"
 anyhow = "1.0.32"
 tokio = { version = "1.35.1", features = ["rt-multi-thread", "macros", "time", "process", "io-util", "io-std"] }
