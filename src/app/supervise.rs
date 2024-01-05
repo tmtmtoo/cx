@@ -1,5 +1,5 @@
 use super::{components::*, *};
-use crate::exec::*;
+use crate::exec2::*;
 use crate::prelude::*;
 
 enum State<E, S> {
@@ -96,7 +96,7 @@ impl From<SharedParams<WaitSec>> for SharedParams<PrintableCmdNotFound<CmdExecut
 
 impl SuperviseApp<SharedParams<PrintableCmdNotFound<CmdExecutor>>, SharedParams<WaitSec>> {
     pub fn new(command: String, count: Option<usize>, interval: f64) -> Self {
-        let executor = Arc::new(TokioPipedCmdExecutor::new());
+        let executor = Arc::new(tokio_impl::TokioPipedCmdExecutor);
 
         Self {
             state: State::ExecuteCommand(SharedParams::new(
