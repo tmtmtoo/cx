@@ -4,7 +4,7 @@ use crate::prelude::*;
 #[derive(new)]
 pub struct CmdExecutor {
     pub command: String,
-    pub executor: Arc<dyn PipedCmdExecutor>,
+    pub executor: Arc<dyn PipedCmdExecutor + Send + Sync>,
 }
 
 #[async_trait]
@@ -12,7 +12,8 @@ impl super::Component for CmdExecutor {
     type Output = Result<Exit>;
 
     async fn handle(&self) -> Self::Output {
-        self.executor.piped_exec(self.command.as_str()).await
+        let output = self.executor.piped_exec(self.command.as_str()).await?;
+        Ok(output)
     }
 }
 

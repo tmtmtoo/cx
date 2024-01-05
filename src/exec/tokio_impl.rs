@@ -19,7 +19,7 @@ impl TokioPipedCmdExecutor {
 
 #[async_trait::async_trait]
 impl PipedCmdExecutor for TokioPipedCmdExecutor {
-    async fn piped_exec(&self, command: &str) -> anyhow::Result<Exit> {
+    async fn piped_exec(&self, command: &str) -> std::io::Result<Exit> {
         let (program, options) = Self::parse_command(command);
 
         let mut child = tokio::process::Command::new(program)
@@ -28,15 +28,13 @@ impl PipedCmdExecutor for TokioPipedCmdExecutor {
             .stderr(std::process::Stdio::piped())
             .spawn()?;
 
-        let mut child_stdout = child
-            .stdout
-            .take()
-            .ok_or_else(|| anyhow::anyhow!("failed to take stdout"))?;
+        let mut child_stdout = child.stdout.take().ok_or_else(|| {
+            std::io::Error::new(std::io::ErrorKind::Other, "failed to take stdout")
+        })?;
 
-        let mut child_stderr = child
-            .stderr
-            .take()
-            .ok_or_else(|| anyhow::anyhow!("failed to take stderr"))?;
+        let mut child_stderr = child.stderr.take().ok_or_else(|| {
+            std::io::Error::new(std::io::ErrorKind::Other, "failed to take stderr")
+        })?;
 
         let mut process_stdout = tokio::io::stdout();
 
@@ -49,7 +47,10 @@ impl PipedCmdExecutor for TokioPipedCmdExecutor {
         );
 
         let code = exit_status?.code().ok_or_else(|| {
-            anyhow::anyhow!("failed to start child process or terminated abnormally")
+            std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "failed to start child process or terminated abnormally",
+            )
         })?;
 
         Ok(Exit { code })

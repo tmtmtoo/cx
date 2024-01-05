@@ -51,7 +51,7 @@ where
 pub struct SharedParams<C> {
     command: String,
     interval: f64,
-    executor: Arc<dyn PipedCmdExecutor>,
+    executor: Arc<dyn PipedCmdExecutor + Send + Sync>,
     inner: C,
 }
 
