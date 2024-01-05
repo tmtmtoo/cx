@@ -22,7 +22,7 @@ extern crate derive_new;
 
 mod app;
 mod config;
-mod exec2;
+mod exec;
 mod prelude;
 
 use app::*;

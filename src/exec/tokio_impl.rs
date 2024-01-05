@@ -52,7 +52,7 @@ impl PipedCmdExecutor for TokioPipedCmdExecutor {
             anyhow::anyhow!("failed to start child process or terminated abnormally")
         })?;
 
-        Ok(super::Exit { code })
+        Ok(Exit { code })
     }
 }
 
