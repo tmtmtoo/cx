@@ -56,6 +56,7 @@ pub struct SharedParams<C> {
     command: String,
     interval: f64,
     executor: std::sync::Arc<dyn PipedCmdExecute + Send + Sync>,
+    sleeper: std::sync::Arc<dyn Sleep + Send + Sync>,
     inner: C,
 }
 
@@ -73,10 +74,12 @@ impl From<SharedParams<PrintableCmdNotFound<CmdExecutor>>> for SharedParams<Wait
         Self {
             inner: WaitSec {
                 sec: state.interval,
+                sleeper: state.sleeper.clone(),
             },
             command: state.command,
             interval: state.interval,
             executor: state.executor,
+            sleeper: state.sleeper,
         }
     }
 }
@@ -94,6 +97,7 @@ impl From<SharedParams<WaitSec>> for SharedParams<PrintableCmdNotFound<CmdExecut
             command: state.command,
             interval: state.interval,
             executor: state.executor,
+            sleeper: state.sleeper,
         }
     }
 }
@@ -101,12 +105,14 @@ impl From<SharedParams<WaitSec>> for SharedParams<PrintableCmdNotFound<CmdExecut
 impl RetryApp<SharedParams<PrintableCmdNotFound<CmdExecutor>>, SharedParams<WaitSec>> {
     pub fn new(command: String, count: Option<usize>, interval: f64) -> Self {
         let executor = std::sync::Arc::new(PipedCmdExecutor);
+        let sleeper = std::sync::Arc::new(Sleeper);
 
         Self {
             state: State::ExecuteCommand(SharedParams::new(
                 command.to_owned(),
                 interval,
                 executor.clone(),
+                sleeper,
                 PrintableCmdNotFound::new(command.to_owned(), CmdExecutor::new(command, executor)),
             )),
             count,

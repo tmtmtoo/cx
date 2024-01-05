@@ -57,6 +57,15 @@ impl PipedCmdExecute for PipedCmdExecutor {
     }
 }
 
+pub struct Sleeper;
+
+#[async_trait::async_trait]
+impl Sleep for Sleeper {
+    async fn sleep_sec(&self, sec: f64) {
+        tokio::time::sleep(tokio::time::Duration::from_secs_f64(sec)).await;
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

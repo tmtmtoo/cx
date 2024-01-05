@@ -11,3 +11,8 @@ pub struct Exit {
 pub trait PipedCmdExecute {
     async fn piped_exec(&self, command: &str) -> std::io::Result<Exit>;
 }
+
+#[async_trait::async_trait]
+pub trait Sleep {
+    async fn sleep_sec(&self, sec: f64);
+}
