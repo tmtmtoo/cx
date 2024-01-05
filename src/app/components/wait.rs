@@ -1,4 +1,3 @@
-use crate::app::*;
 use crate::io::*;
 
 pub struct WaitSec {
@@ -7,7 +6,7 @@ pub struct WaitSec {
 }
 
 #[async_trait::async_trait]
-impl Component for WaitSec {
+impl super::Component for WaitSec {
     type Output = ();
 
     async fn handle(&self) -> Self::Output {

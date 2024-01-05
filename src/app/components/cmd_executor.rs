@@ -1,4 +1,3 @@
-use crate::app::*;
 use crate::io::*;
 
 #[derive(new)]
@@ -8,7 +7,7 @@ pub struct CmdExecutor {
 }
 
 #[async_trait::async_trait]
-impl Component for CmdExecutor {
+impl super::Component for CmdExecutor {
     type Output = anyhow::Result<Exit>;
 
     async fn handle(&self) -> Self::Output {

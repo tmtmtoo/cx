@@ -5,13 +5,6 @@ mod supervise;
 pub use retry::*;
 pub use supervise::*;
 
-#[async_trait::async_trait]
-pub trait Component {
-    type Output;
-
-    async fn handle(&self) -> Self::Output;
-}
-
 pub enum Transition<N, D> {
     Next(N),
     Done(D),
