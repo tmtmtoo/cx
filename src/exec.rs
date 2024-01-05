@@ -6,6 +6,6 @@ pub struct Exit {
 }
 
 #[async_trait::async_trait]
-pub trait PipedCmdExecutor: Send + Sync {
-    async fn piped_exec(&self, command: &str) -> anyhow::Result<Exit>;
+pub trait PipedCmdExecutor {
+    async fn piped_exec(&self, command: &str) -> std::io::Result<Exit>;
 }
