@@ -8,6 +8,6 @@ pub struct Exit {
 }
 
 #[async_trait::async_trait]
-pub trait PipedCmdExecutor {
+pub trait PipedCmdExecute {
     async fn piped_exec(&self, command: &str) -> std::io::Result<Exit>;
 }

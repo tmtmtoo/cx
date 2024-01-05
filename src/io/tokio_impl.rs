@@ -1,8 +1,8 @@
 use super::*;
 
-pub struct TokioPipedCmdExecutor;
+pub struct PipedCmdExecutor;
 
-impl TokioPipedCmdExecutor {
+impl PipedCmdExecutor {
     fn parse_command(command: &str) -> (String, Vec<String>) {
         let mut elements = command.split(' ').map(Into::into).collect::<Vec<_>>();
 
@@ -18,7 +18,7 @@ impl TokioPipedCmdExecutor {
 }
 
 #[async_trait::async_trait]
-impl PipedCmdExecutor for TokioPipedCmdExecutor {
+impl PipedCmdExecute for PipedCmdExecutor {
     async fn piped_exec(&self, command: &str) -> std::io::Result<Exit> {
         let (program, options) = Self::parse_command(command);
 
@@ -63,20 +63,20 @@ mod tests {
 
     #[tokio::test]
     async fn should_success_given_suitable_command() {
-        let actual = TokioPipedCmdExecutor.piped_exec("echo abcd").await.unwrap();
+        let actual = PipedCmdExecutor.piped_exec("echo abcd").await.unwrap();
         let expected = Exit { code: 0 };
         assert_eq!(actual, expected);
     }
 
     #[tokio::test]
     async fn should_failure_when_command_not_found() {
-        let actual = TokioPipedCmdExecutor.piped_exec("failed").await.is_err();
+        let actual = PipedCmdExecutor.piped_exec("failed").await.is_err();
         assert!(actual);
     }
 
     #[tokio::test]
     async fn should_success_when_exit_not_zero() {
-        let actual = TokioPipedCmdExecutor
+        let actual = PipedCmdExecutor
             .piped_exec("cat non_existent_file")
             .await
             .unwrap();

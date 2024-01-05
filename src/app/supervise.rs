@@ -50,7 +50,7 @@ where
 pub struct SharedParams<C> {
     command: String,
     interval: f64,
-    executor: std::sync::Arc<dyn PipedCmdExecutor + Send + Sync>,
+    executor: std::sync::Arc<dyn PipedCmdExecute + Send + Sync>,
     inner: C,
 }
 
@@ -95,7 +95,7 @@ impl From<SharedParams<WaitSec>> for SharedParams<PrintableCmdNotFound<CmdExecut
 
 impl SuperviseApp<SharedParams<PrintableCmdNotFound<CmdExecutor>>, SharedParams<WaitSec>> {
     pub fn new(command: String, count: Option<usize>, interval: f64) -> Self {
-        let executor = std::sync::Arc::new(TokioPipedCmdExecutor);
+        let executor = std::sync::Arc::new(PipedCmdExecutor);
 
         Self {
             state: State::ExecuteCommand(SharedParams::new(
