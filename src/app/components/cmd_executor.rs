@@ -1,10 +1,10 @@
 use crate::app::*;
-use crate::exec::*;
+use crate::io::*;
 
 #[derive(new)]
 pub struct CmdExecutor {
     pub command: String,
-    pub executor: std::sync::Arc<dyn PipedCmdExecutor + Send + Sync>,
+    pub executor: std::sync::Arc<dyn PipedCmdExecute + Send + Sync>,
 }
 
 #[async_trait::async_trait]

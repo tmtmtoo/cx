@@ -1,4 +1,6 @@
-pub mod tokio_impl;
+mod tokio_impl;
+
+pub use tokio_impl::*;
 
 #[derive(derive_new::new, Debug, Clone, PartialEq, derive_getters::Getters)]
 pub struct Exit {
@@ -6,6 +8,11 @@ pub struct Exit {
 }
 
 #[async_trait::async_trait]
-pub trait PipedCmdExecutor {
+pub trait PipedCmdExecute {
     async fn piped_exec(&self, command: &str) -> std::io::Result<Exit>;
+}
+
+#[async_trait::async_trait]
+pub trait Sleep {
+    async fn sleep_sec(&self, sec: f64);
 }
