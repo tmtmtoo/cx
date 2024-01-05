@@ -1,4 +1,6 @@
-pub mod tokio_impl;
+mod tokio_impl;
+
+pub use tokio_impl::*;
 
 #[derive(derive_new::new, Debug, Clone, PartialEq, derive_getters::Getters)]
 pub struct Exit {
