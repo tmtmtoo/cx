@@ -30,7 +30,9 @@ where
             State::ExecuteCommand(component) => match self.count {
                 Some(0) => Transition::Done(RetryResult::Failure),
                 _ => match (component.handle().await, self.count) {
-                    (anyhow::Result::Ok(exit), _) if *exit.code() == 0 => Transition::Done(RetryResult::Success),
+                    (anyhow::Result::Ok(exit), _) if *exit.code() == 0 => {
+                        Transition::Done(RetryResult::Success)
+                    }
                     (_, Some(1)) => Transition::Done(RetryResult::Failure),
                     (_, _) => Transition::Next(RetryApp {
                         state: State::Sleep(component.into()),
@@ -99,7 +101,7 @@ impl From<SharedParams<WaitSec>> for SharedParams<PrintableCmdNotFound<CmdExecut
 
 impl RetryApp<SharedParams<PrintableCmdNotFound<CmdExecutor>>, SharedParams<WaitSec>> {
     pub fn new(command: String, count: Option<usize>, interval: f64) -> Self {
-        let executor = Arc::new(TokioPipedCmdExecutor::new());
+        let executor = Arc::new(tokio_impl::TokioPipedCmdExecutor);
 
         Self {
             state: State::ExecuteCommand(SharedParams::new(
@@ -153,7 +155,7 @@ mod tests {
         }
     }
 
-    #[tokio::test]
+    #[lite_async_test::async_test]
     async fn exec_cmd_to_done_with_success() {
         let app = RetryApp::<TestE, TestS> {
             state: State::ExecuteCommand(TestE {
@@ -168,7 +170,7 @@ mod tests {
         ));
     }
 
-    #[tokio::test]
+    #[lite_async_test::async_test]
     async fn exec_cmd_to_sleep_without_limit() {
         let app = RetryApp::<TestE, TestS> {
             state: State::ExecuteCommand(TestE {
@@ -188,7 +190,7 @@ mod tests {
         });
     }
 
-    #[tokio::test]
+    #[lite_async_test::async_test]
     async fn exec_cmd_to_sleep_with_limit() {
         let app = RetryApp::<TestE, TestS> {
             state: State::ExecuteCommand(TestE {
@@ -216,7 +218,7 @@ mod tests {
         );
     }
 
-    #[tokio::test]
+    #[lite_async_test::async_test]
     async fn exec_cmd_to_done_with_fail() {
         let app = RetryApp::<TestE, TestS> {
             state: State::ExecuteCommand(TestE {
@@ -231,7 +233,7 @@ mod tests {
         ));
     }
 
-    #[tokio::test]
+    #[lite_async_test::async_test]
     async fn sleep_to_exec() {
         let app = RetryApp::<TestE, TestS> {
             state: State::Sleep(TestS),
