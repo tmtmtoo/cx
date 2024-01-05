@@ -15,14 +15,14 @@ impl Future for TokioChildProcess {
     ) -> std::task::Poll<Self::Output> {
         use futures::prelude::*;
 
-        self.0.wait().boxed()
-            .poll_unpin(cx)
-            .map(|status| match status.map(|status| status.code()) {
+        self.0.wait().boxed().poll_unpin(cx).map(|status| {
+            match status.map(|status| status.code()) {
                 anyhow::Result::Ok(Some(code)) => Ok(code),
                 _ => Err(anyhow!(
                     "failed to start child process or terminated abnormally"
                 )),
-            })
+            }
+        })
     }
 }
 

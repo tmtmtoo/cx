@@ -25,6 +25,7 @@ extern crate derive_getters;
 mod app;
 mod config;
 mod exec;
+mod exec2;
 mod prelude;
 
 use app::*;
