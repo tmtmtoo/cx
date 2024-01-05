@@ -1,3 +1,5 @@
+use crate::app::*;
+
 #[derive(new)]
 pub struct PrintableCmdNotFound<C> {
     pub command: String,
@@ -5,8 +7,8 @@ pub struct PrintableCmdNotFound<C> {
 }
 
 #[async_trait::async_trait]
-impl<T: 'static, C: crate::app::Component<Output = anyhow::Result<T>> + Send + Sync>
-    crate::app::Component for PrintableCmdNotFound<C>
+impl<T: 'static, C: Component<Output = anyhow::Result<T>> + Send + Sync>
+    Component for PrintableCmdNotFound<C>
 {
     type Output = anyhow::Result<T>;
 

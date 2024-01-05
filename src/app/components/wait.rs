@@ -1,9 +1,11 @@
+use crate::app::*;
+
 pub struct WaitSec {
     pub sec: f64,
 }
 
 #[async_trait::async_trait]
-impl crate::app::Component for WaitSec {
+impl Component for WaitSec {
     type Output = ();
 
     async fn handle(&self) -> Self::Output {
