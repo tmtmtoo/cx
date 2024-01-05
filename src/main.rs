@@ -23,15 +23,15 @@ extern crate derive_new;
 mod app;
 mod config;
 mod exec;
-mod prelude;
 
 use app::*;
 use config::*;
-use prelude::*;
-use structopt::StructOpt;
 
 #[tokio::main]
 async fn main() {
+    use futures::{future::Either, FutureExt};
+    use structopt::StructOpt;
+
     let config = Config::from_args();
 
     let state_machine = match config {

@@ -2,12 +2,10 @@ mod components;
 mod retry;
 mod supervise;
 
-use crate::prelude::*;
-
 pub use retry::*;
 pub use supervise::*;
 
-#[async_trait]
+#[async_trait::async_trait]
 pub trait Component {
     type Output;
 
@@ -19,7 +17,7 @@ pub enum Transition<N, D> {
     Done(D),
 }
 
-#[async_trait]
+#[async_trait::async_trait]
 pub trait StateMachine: Sized {
     type Output;
 
@@ -39,7 +37,7 @@ pub async fn run<S: StateMachine>(mut machine: S) -> S::Output {
 mod tests {
     use super::*;
 
-    #[async_trait]
+    #[async_trait::async_trait]
     impl StateMachine for u32 {
         type Output = u32;
 

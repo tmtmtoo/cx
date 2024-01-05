@@ -1,6 +1,5 @@
 use super::{components::*, *};
 use crate::exec::*;
-use crate::prelude::*;
 
 pub enum RetryResult {
     Success,
@@ -17,10 +16,10 @@ pub struct RetryApp<E, S> {
     count: Option<usize>,
 }
 
-#[async_trait]
+#[async_trait::async_trait]
 impl<E, S> StateMachine for RetryApp<E, S>
 where
-    E: Component<Output = Result<Exit>> + Into<S> + Send + Sync,
+    E: Component<Output = anyhow::Result<Exit>> + Into<S> + Send + Sync,
     S: Component<Output = ()> + Into<E> + Send + Sync,
 {
     type Output = RetryResult;
@@ -56,11 +55,11 @@ where
 pub struct SharedParams<C> {
     command: String,
     interval: f64,
-    executor: Arc<dyn PipedCmdExecutor + Send + Sync>,
+    executor: std::sync::Arc<dyn PipedCmdExecutor + Send + Sync>,
     inner: C,
 }
 
-#[async_trait]
+#[async_trait::async_trait]
 impl<T: 'static, C: Component<Output = T> + Send + Sync> Component for SharedParams<C> {
     type Output = T;
 
@@ -101,7 +100,7 @@ impl From<SharedParams<WaitSec>> for SharedParams<PrintableCmdNotFound<CmdExecut
 
 impl RetryApp<SharedParams<PrintableCmdNotFound<CmdExecutor>>, SharedParams<WaitSec>> {
     pub fn new(command: String, count: Option<usize>, interval: f64) -> Self {
-        let executor = Arc::new(tokio_impl::TokioPipedCmdExecutor);
+        let executor = std::sync::Arc::new(tokio_impl::TokioPipedCmdExecutor);
 
         Self {
             state: State::ExecuteCommand(SharedParams::new(
@@ -120,12 +119,12 @@ mod tests {
     use super::*;
 
     struct TestE {
-        output: Box<dyn Fn() -> Result<Exit> + Send + Sync>,
+        output: Box<dyn Fn() -> anyhow::Result<Exit> + Send + Sync>,
     }
 
-    #[async_trait]
+    #[async_trait::async_trait]
     impl Component for TestE {
-        type Output = Result<Exit>;
+        type Output = anyhow::Result<Exit>;
         async fn handle(&self) -> Self::Output {
             (*self.output)()
         }
@@ -133,7 +132,7 @@ mod tests {
 
     struct TestS;
 
-    #[async_trait]
+    #[async_trait::async_trait]
     impl Component for TestS {
         type Output = ();
         async fn handle(&self) -> Self::Output {
