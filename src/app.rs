@@ -52,7 +52,7 @@ mod tests {
         }
     }
 
-    #[tokio::test]
+    #[lite_async_test::async_test]
     async fn run_must_be_done() {
         let actual = run(0).await;
         let expected = 5;

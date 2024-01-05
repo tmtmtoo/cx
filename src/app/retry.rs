@@ -155,7 +155,7 @@ mod tests {
         }
     }
 
-    #[tokio::test]
+    #[lite_async_test::async_test]
     async fn exec_cmd_to_done_with_success() {
         let app = RetryApp::<TestE, TestS> {
             state: State::ExecuteCommand(TestE {
@@ -170,7 +170,7 @@ mod tests {
         ));
     }
 
-    #[tokio::test]
+    #[lite_async_test::async_test]
     async fn exec_cmd_to_sleep_without_limit() {
         let app = RetryApp::<TestE, TestS> {
             state: State::ExecuteCommand(TestE {
@@ -190,7 +190,7 @@ mod tests {
         });
     }
 
-    #[tokio::test]
+    #[lite_async_test::async_test]
     async fn exec_cmd_to_sleep_with_limit() {
         let app = RetryApp::<TestE, TestS> {
             state: State::ExecuteCommand(TestE {
@@ -218,7 +218,7 @@ mod tests {
         );
     }
 
-    #[tokio::test]
+    #[lite_async_test::async_test]
     async fn exec_cmd_to_done_with_fail() {
         let app = RetryApp::<TestE, TestS> {
             state: State::ExecuteCommand(TestE {
@@ -233,7 +233,7 @@ mod tests {
         ));
     }
 
-    #[tokio::test]
+    #[lite_async_test::async_test]
     async fn sleep_to_exec() {
         let app = RetryApp::<TestE, TestS> {
             state: State::Sleep(TestS),
