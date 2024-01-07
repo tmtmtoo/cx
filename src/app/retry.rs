@@ -52,16 +52,16 @@ where
 }
 
 #[derive(new)]
-pub struct SharedParams<C> {
+pub struct SharedParams<'a, C> {
     command: String,
     interval: f64,
-    executor: std::sync::Arc<dyn PipedCmdExecute + Send + Sync>,
-    sleeper: std::sync::Arc<dyn Sleep + Send + Sync>,
+    executor: &'a (dyn PipedCmdExecute + Send + Sync),
+    sleeper: &'a (dyn Sleep + Send + Sync),
     inner: C,
 }
 
 #[async_trait::async_trait]
-impl<T: 'static, C: Component<Output = T> + Send + Sync> Component for SharedParams<C> {
+impl<T: 'static, C: Component<Output = T> + Send + Sync> Component for SharedParams<'_, C> {
     type Output = T;
 
     async fn handle(&self) -> Self::Output {
@@ -69,12 +69,14 @@ impl<T: 'static, C: Component<Output = T> + Send + Sync> Component for SharedPar
     }
 }
 
-impl From<SharedParams<PrintableCmdNotFound<CmdExecutor>>> for SharedParams<WaitSec> {
-    fn from(state: SharedParams<PrintableCmdNotFound<CmdExecutor>>) -> Self {
+impl<'a> From<SharedParams<'a, PrintableCmdNotFound<CmdExecutor<'a>>>>
+    for SharedParams<'a, WaitSec<'a>>
+{
+    fn from(state: SharedParams<'a, PrintableCmdNotFound<CmdExecutor>>) -> Self {
         Self {
             inner: WaitSec {
                 sec: state.interval,
-                sleeper: state.sleeper.clone(),
+                sleeper: state.sleeper,
             },
             command: state.command,
             interval: state.interval,
@@ -84,14 +86,16 @@ impl From<SharedParams<PrintableCmdNotFound<CmdExecutor>>> for SharedParams<Wait
     }
 }
 
-impl From<SharedParams<WaitSec>> for SharedParams<PrintableCmdNotFound<CmdExecutor>> {
-    fn from(state: SharedParams<WaitSec>) -> Self {
+impl<'a> From<SharedParams<'a, WaitSec<'a>>>
+    for SharedParams<'a, PrintableCmdNotFound<CmdExecutor<'a>>>
+{
+    fn from(state: SharedParams<'a, WaitSec>) -> Self {
         Self {
             inner: PrintableCmdNotFound {
                 command: state.command.to_owned(),
                 inner: CmdExecutor {
                     command: state.command.to_owned(),
-                    executor: state.executor.clone(),
+                    executor: state.executor,
                 },
             },
             command: state.command,
@@ -102,16 +106,21 @@ impl From<SharedParams<WaitSec>> for SharedParams<PrintableCmdNotFound<CmdExecut
     }
 }
 
-impl RetryApp<SharedParams<PrintableCmdNotFound<CmdExecutor>>, SharedParams<WaitSec>> {
-    pub fn new(command: String, count: Option<usize>, interval: f64) -> Self {
-        let executor = std::sync::Arc::new(PipedCmdExecutor);
-        let sleeper = std::sync::Arc::new(Sleeper);
-
+impl<'a>
+    RetryApp<SharedParams<'a, PrintableCmdNotFound<CmdExecutor<'a>>>, SharedParams<'a, WaitSec<'a>>>
+{
+    pub fn new(
+        command: String,
+        count: Option<usize>,
+        interval: f64,
+        executor: &'a (dyn PipedCmdExecute + Send + Sync),
+        sleeper: &'a (dyn Sleep + Send + Sync),
+    ) -> Self {
         Self {
             state: State::ExecuteCommand(SharedParams::new(
                 command.to_owned(),
                 interval,
-                executor.clone(),
+                executor,
                 sleeper,
                 PrintableCmdNotFound::new(command.to_owned(), CmdExecutor::new(command, executor)),
             )),

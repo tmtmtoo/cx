@@ -13,23 +13,20 @@ impl<T: 'static, C: super::Component<Output = anyhow::Result<T>> + Send + Sync> 
     async fn handle(&self) -> Self::Output {
         let result = self.inner.handle().await;
 
-        match &result {
-            Err(_) => {
-                if self.command.is_empty() {
-                    eprintln!("cx: no command entered")
-                } else {
-                    eprintln!(
-                        "cx: command not found '{}'",
-                        self.command
-                            .split(" ")
-                            .collect::<Vec<_>>()
-                            .get(0)
-                            .unwrap_or(&"")
-                    )
-                }
+        if let Err(_) = &result {
+            if self.command.is_empty() {
+                eprintln!("cx: no command entered")
+            } else {
+                eprintln!(
+                    "cx: command not found '{}'",
+                    self.command
+                        .split(' ')
+                        .collect::<Vec<_>>()
+                        .first()
+                        .unwrap_or(&"")
+                )
             }
-            _ => (),
-        };
+        }
 
         result
     }
