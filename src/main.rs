@@ -26,6 +26,7 @@ mod io;
 
 use app::*;
 use config::*;
+use io::*;
 
 #[tokio::main]
 async fn main() {
@@ -33,6 +34,8 @@ async fn main() {
     use structopt::StructOpt;
 
     let config = Config::from_args();
+    let executor = PipedCmdExecutor;
+    let sleeper = Sleeper;
 
     let state_machine = match config {
         Config::retry {
@@ -40,7 +43,14 @@ async fn main() {
             count,
             interval,
         } => Either::Left(
-            run(RetryApp::new(command.join(" "), count, interval)).map(|output| match output {
+            run(RetryApp::new(
+                command.join(" "),
+                count,
+                interval,
+                &executor,
+                &sleeper,
+            ))
+            .map(|output| match output {
                 RetryResult::Success => 0,
                 RetryResult::Failure => 1,
             }),
@@ -49,7 +59,16 @@ async fn main() {
             command,
             count,
             interval,
-        } => Either::Right(run(SuperviseApp::new(command.join(" "), count, interval)).map(|_| 0)),
+        } => Either::Right(
+            run(SuperviseApp::new(
+                command.join(" "),
+                count,
+                interval,
+                &executor,
+                &sleeper,
+            ))
+            .map(|_| 0),
+        ),
     };
 
     std::process::exit(state_machine.await);

@@ -1,13 +1,13 @@
 use crate::io::*;
 
 #[derive(new)]
-pub struct CmdExecutor {
+pub struct CmdExecutor<'a> {
     pub command: String,
-    pub executor: std::sync::Arc<dyn PipedCmdExecute + Send + Sync>,
+    pub executor: &'a (dyn PipedCmdExecute + Send + Sync),
 }
 
 #[async_trait::async_trait]
-impl super::Component for CmdExecutor {
+impl<'a> super::Component for CmdExecutor<'a> {
     type Output = anyhow::Result<Exit>;
 
     async fn handle(&self) -> Self::Output {

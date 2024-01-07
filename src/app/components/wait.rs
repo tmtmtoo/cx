@@ -1,12 +1,12 @@
 use crate::io::*;
 
-pub struct WaitSec {
+pub struct WaitSec<'a> {
     pub sec: f64,
-    pub sleeper: std::sync::Arc<dyn Sleep + Send + Sync>,
+    pub sleeper: &'a (dyn Sleep + Send + Sync),
 }
 
 #[async_trait::async_trait]
-impl super::Component for WaitSec {
+impl<'a> super::Component for WaitSec<'a> {
     type Output = ();
 
     async fn handle(&self) -> Self::Output {
