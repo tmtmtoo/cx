@@ -30,46 +30,37 @@ use io::*;
 
 #[tokio::main]
 async fn main() {
-    use futures::{future::Either, FutureExt};
     use structopt::StructOpt;
 
     let config = Config::from_args();
     let executor = PipedCmdExecutor;
     let sleeper = Sleeper;
 
-    let state_machine = match config {
+    let exit_code = match config {
         Config::retry {
             command,
             count,
             interval,
-        } => Either::Left(
-            run(RetryApp::new(
-                command.join(" "),
-                count,
-                interval,
-                &executor,
-                &sleeper,
-            ))
-            .map(|output| match output {
+        } => {
+            let command = command.join(" ");
+            let app = RetryApp::new(&command, count, interval, &executor, &sleeper);
+            let output = run(app).await;
+            match output {
                 RetryResult::Success => 0,
                 RetryResult::Failure => 1,
-            }),
-        ),
+            }
+        }
         Config::supervise {
             command,
             count,
             interval,
-        } => Either::Right(
-            run(SuperviseApp::new(
-                command.join(" "),
-                count,
-                interval,
-                &executor,
-                &sleeper,
-            ))
-            .map(|_| 0),
-        ),
+        } => {
+            let command = command.join(" ");
+            let app = SuperviseApp::new(&command, count, interval, &executor, &sleeper);
+            run(app).await;
+            0
+        }
     };
 
-    std::process::exit(state_machine.await);
+    std::process::exit(exit_code);
 }
