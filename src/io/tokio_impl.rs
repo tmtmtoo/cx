@@ -8,7 +8,7 @@ impl PipedCmdExecutor {
 
         let options = elements.drain(1..).collect::<Vec<_>>();
 
-        let program = match elements.get(0) {
+        let program = match elements.first() {
             Some(_) => elements.remove(0),
             None => String::new(),
         };

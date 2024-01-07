@@ -76,7 +76,7 @@ impl<'a> From<SharedParams<'a, PrintableCmdNotFound<CmdExecutor<'a>>>>
         Self {
             inner: WaitSec {
                 sec: state.interval,
-                sleeper: state.sleeper.clone(),
+                sleeper: state.sleeper,
             },
             command: state.command,
             interval: state.interval,
