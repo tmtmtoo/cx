@@ -1,12 +1,12 @@
 #[derive(new)]
-pub struct PrintableCmdNotFound<C> {
-    pub command: String,
+pub struct PrintableCmdNotFound<'a, C> {
+    pub command: &'a str,
     pub inner: C,
 }
 
 #[async_trait::async_trait]
-impl<T: 'static, C: super::Component<Output = anyhow::Result<T>> + Send + Sync> super::Component
-    for PrintableCmdNotFound<C>
+impl<'a, T: 'static, C: super::Component<Output = anyhow::Result<T>> + Send + Sync> super::Component
+    for PrintableCmdNotFound<'a, C>
 {
     type Output = anyhow::Result<T>;
 

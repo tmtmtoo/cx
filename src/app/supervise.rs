@@ -48,7 +48,7 @@ where
 
 #[derive(new)]
 pub struct SharedParams<'a, C> {
-    command: String,
+    command: &'a str,
     interval: f64,
     executor: &'a (dyn PipedCmdExecute + Send + Sync),
     sleeper: &'a (dyn Sleep + Send + Sync),
@@ -64,10 +64,10 @@ impl<T: 'static, C: Component<Output = T> + Send + Sync, 'a> Component for Share
     }
 }
 
-impl<'a> From<SharedParams<'a, PrintableCmdNotFound<CmdExecutor<'a>>>>
+impl<'a> From<SharedParams<'a, PrintableCmdNotFound<'a, CmdExecutor<'a>>>>
     for SharedParams<'a, WaitSec<'a>>
 {
-    fn from(state: SharedParams<'a, PrintableCmdNotFound<CmdExecutor<'a>>>) -> Self {
+    fn from(state: SharedParams<'a, PrintableCmdNotFound<'a, CmdExecutor<'a>>>) -> Self {
         Self {
             inner: WaitSec {
                 sec: state.interval,
@@ -82,14 +82,14 @@ impl<'a> From<SharedParams<'a, PrintableCmdNotFound<CmdExecutor<'a>>>>
 }
 
 impl<'a> From<SharedParams<'a, WaitSec<'a>>>
-    for SharedParams<'a, PrintableCmdNotFound<CmdExecutor<'a>>>
+    for SharedParams<'a, PrintableCmdNotFound<'a, CmdExecutor<'a>>>
 {
     fn from(state: SharedParams<'a, WaitSec<'a>>) -> Self {
         Self {
             inner: PrintableCmdNotFound {
-                command: state.command.to_owned(),
+                command: state.command,
                 inner: CmdExecutor {
-                    command: state.command.to_owned(),
+                    command: state.command,
                     executor: state.executor,
                 },
             },
@@ -103,12 +103,12 @@ impl<'a> From<SharedParams<'a, WaitSec<'a>>>
 
 impl<'a>
     SuperviseApp<
-        SharedParams<'a, PrintableCmdNotFound<CmdExecutor<'a>>>,
+        SharedParams<'a, PrintableCmdNotFound<'a, CmdExecutor<'a>>>,
         SharedParams<'a, WaitSec<'a>>,
     >
 {
     pub fn new(
-        command: String,
+        command: &'a str,
         count: Option<usize>,
         interval: f64,
         executor: &'a (dyn PipedCmdExecute + Send + Sync),
@@ -116,11 +116,11 @@ impl<'a>
     ) -> Self {
         Self {
             state: State::ExecuteCommand(SharedParams::new(
-                command.to_owned(),
+                command,
                 interval,
                 executor,
                 sleeper,
-                PrintableCmdNotFound::new(command.to_owned(), CmdExecutor::new(command, executor)),
+                PrintableCmdNotFound::new(command, CmdExecutor::new(command, executor)),
             )),
             count,
         }
